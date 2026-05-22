@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Generated {{ report.generated_for }}</p>
+    <h1>{{ report.title }}</h1>
+    <p>{{ report.guardrail }}</p>
+  </div>
+</section>
+
+{% if report.data_state == "insufficient data" %}
+<article class="panel notice">Data is thin. Add at least three entries for stronger signals.</article>
+{% endif %}
+
+<section class="grid">
+  <article class="panel">
+    <h2>System Status</h2>
+    <dl class="status-list">
+      <div><dt>Focus</dt><dd>{{ report.system_status.focus }}</dd></div>
+      <div><dt>Energy</dt><dd>{{ report.system_status.energy }}</dd></div>
+      <div><dt>Stress</dt><dd>{{ report.system_status.stress }}</dd></div>
+      <div><dt>Mood</dt><dd>{{ report.system_status.mood }}</dd></div>
+    </dl>
+  </article>
+  <article class="panel">
+    <h2>Correlations</h2>
+    <ul class="compact-list">
+      <li>Sleep vs focus: {{ report.correlations.sleep_hours_vs_focus if report.correlations.sleep_hours_vs_focus is not none else "insufficient data" }}</li>
+      <li>Stress vs focus: {{ report.correlations.stress_vs_focus if report.correlations.stress_vs_focus is not none else "insufficient data" }}</li>
+      <li>Energy vs progress: {{ report.correlations.energy_vs_progress_score if report.correlations.energy_vs_progress_score is not none else "insufficient data" }}</li>
+    </ul>
+  </article>
+  <article class="panel">
+    <h2>Rolling Trend</h2>
+    {% set rolling_focus = report.metrics.rolling.focus[-1] if report.metrics.rolling.focus else none %}
+    {% set rolling_energy = report.metrics.rolling.energy[-1] if report.metrics.rolling.energy else none %}
+    {% set rolling_stress = report.metrics.rolling.stress[-1] if report.metrics.rolling.stress else none %}
+    <ul class="compact-list">
+      <li>Focus rolling average: {{ rolling_focus.value if rolling_focus else "insufficient data" }}</li>
+      <li>Energy rolling average: {{ rolling_energy.value if rolling_energy else "insufficient data" }}</li>
+      <li>Stress rolling average: {{ rolling_stress.value if rolling_stress else "insufficient data" }}</li>
+    </ul>
+  </article>
+</section>
+
+<section class="stack">
+  <h2>Detected Patterns</h2>
+  {% if report.detected_patterns %}
+    {% for pattern in report.detected_patterns %}
+    <article class="panel">
+      <h3>{{ loop.index }}. {{ pattern.name }}</h3>
+      {% if pattern.project %}<p class="muted">Project: {{ pattern.project }}</p>{% endif %}
+      <h4>Evidence</h4>
+      <ul>{% for item in pattern.evidence %}<li>{{ item }}</li>{% endfor %}</ul>
+      <h4>Interpretation</h4>
+      <p>{{ pattern.interpretation }}</p>
+      <h4>Suggested patch</h4>
+      <p>{{ pattern.suggested_patch }}</p>
+    </article>
+    {% endfor %}
+  {% else %}
+    <article class="panel"><p class="muted">No repeated patterns detected yet. More logs will sharpen the signal.</p></article>
+  {% endif %}
+</section>
+
+<section class="stack">
+  <h2>Behavioral Loops</h2>
+  {% if report.behavior_loops %}
+    {% for loop_item in report.behavior_loops %}
+    <article class="panel">
+      <h3>{{ loop_item.name }}</h3>
+      <p>{{ loop_item.interpretation }}</p>
+      <p class="muted">{{ loop_item.suggested_patch }}</p>
+    </article>
+    {% endfor %}
+  {% else %}
+    <article class="panel"><p class="muted">No behavior loops are strong enough to flag yet.</p></article>
+  {% endif %}
+</section>
+
+<section class="stack">
+  <h2>Project Risk</h2>
+  {% if report.project_risk %}
+    {% for item in report.project_risk %}
+    <article class="panel">
+      <div class="row"><h3>{{ item.project }}</h3><strong>{{ item.abandonment_risk }}% · {{ item.risk_level }}</strong></div>
+      <ul>{% for factor in item.main_risk_factors %}<li>{{ factor }}</li>{% endfor %}</ul>
+    </article>
+    {% endfor %}
+  {% else %}
+    <article class="panel"><p class="muted">No projects tracked yet.</p></article>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Semantic Memory</h2>
+  <p class="muted">{{ report.semantic_memory.privacy_note }}</p>
+  <dl class="status-list">
+    <div><dt>Embedding model</dt><dd>{{ report.semantic_memory.embedding_model }}</dd></div>
+    <div><dt>Memory items</dt><dd>{{ report.semantic_memory.item_count }}</dd></div>
+    <div><dt>Recurring context pairs</dt><dd>{{ report.semantic_memory.recurring_context_pairs }}</dd></div>
+    <div><dt>Negative tag count</dt><dd>{{ report.semantic_memory.negative_tag_count }}</dd></div>
+  </dl>
+  {% if report.semantic_memory.top_tags %}
+    <div class="tag-cloud">
+      {% for item in report.semantic_memory.top_tags %}
+      <span>{{ item.tag }} × {{ item.count }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>LLM Polish Layer</h2>
+  <p class="muted">
+    {{ "Ollama online" if llm_summary.available else "Ollama offline" }}
+    · {{ llm_summary.model }}
+    · {{ llm_summary.base_url }}
+    · raw journals sent: {{ "no" if not llm_summary.raw_journal_sent else "yes" }}
+  </p>
+  <p>{{ llm_summary.summary }}</p>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Project telemetry</p>
+    <h1>Projects</h1>
+  </div>
+</section>
+
+<section class="two-column">
+  <form class="panel form" method="post" action="/projects">
+    <h2>Add Project</h2>
+    <label>Name <input name="name" required placeholder="Project codename"></label>
+    <label>Description <textarea name="description" rows="4"></textarea></label>
+    <label>Status
+      <select name="status">
+        <option value="active">active</option>
+        <option value="paused">paused</option>
+        <option value="abandoned">abandoned</option>
+        <option value="completed">completed</option>
+      </select>
+    </label>
+    <button type="submit">Save project</button>
+  </form>
+
+  <div class="stack">
+    {% if projects %}
+      {% for project in projects %}
+      <article class="panel">
+        <div class="row">
+          <h2><a href="/projects/{{ project.id }}">{{ project.name }}</a></h2>
+          <span class="pill">{{ project.status }}</span>
+        </div>
+        <p>{{ project.description or "No description." }}</p>
+        <p class="muted">{{ project.logs|length }} logs recorded</p>
+      </article>
+      {% endfor %}
+    {% else %}
+      <article class="panel"><p class="muted">No projects yet.</p></article>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

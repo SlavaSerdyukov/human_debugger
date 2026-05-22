@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Local behavior telemetry</p>
+    <h1>Debug the loop before the loop debugs you.</h1>
+    <p>Track short daily signals, project friction, and focus drift. Data stays local.</p>
+  </div>
+  <form method="post" action="/seed-demo">
+    <button type="submit">Load demo data</button>
+  </form>
+</section>
+
+<section class="grid">
+  <article class="panel">
+    <h2>System Status</h2>
+    <dl class="status-list">
+      <div><dt>Focus</dt><dd>{{ report.system_status.focus }}</dd></div>
+      <div><dt>Energy</dt><dd>{{ report.system_status.energy }}</dd></div>
+      <div><dt>Stress</dt><dd>{{ report.system_status.stress }}</dd></div>
+      <div><dt>Data</dt><dd>{{ report.data_state }}</dd></div>
+    </dl>
+  </article>
+  <article class="panel">
+    <h2>7-Day Signal</h2>
+    {% set week = report.metrics.last_7_days %}
+    <div class="bar-stack">
+      <div class="bar-row"><span>Focus</span><div class="bar"><i style="width: {{ (week.focus or 0) * 10 }}%"></i></div><b>{{ week.focus or "n/a" }}</b></div>
+      <div class="bar-row"><span>Energy</span><div class="bar"><i style="width: {{ (week.energy or 0) * 10 }}%"></i></div><b>{{ week.energy or "n/a" }}</b></div>
+      <div class="bar-row"><span>Stress</span><div class="bar danger"><i style="width: {{ (week.stress or 0) * 10 }}%"></i></div><b>{{ week.stress or "n/a" }}</b></div>
+    </div>
+  </article>
+  <article class="panel">
+    <h2>Latest Entries</h2>
+    {% if entries %}
+      <ul class="compact-list">
+      {% for entry in entries %}
+        <li><strong>{{ entry.date }}</strong> Focus {{ entry.focus }}/10 · {{ entry.tags or "no tags" }}</li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Not enough data yet. Add your first daily entry.</p>
+    {% endif %}
+  </article>
+  <article class="panel">
+    <h2>Projects</h2>
+    {% if projects %}
+      <ul class="compact-list">
+      {% for project in projects %}
+        <li><a href="/projects/{{ project.id }}">{{ project.name }}</a> · {{ project.status }} · {{ project.logs|length }} logs</li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No projects yet. Add one to track risk signals.</p>
+    {% endif %}
+  </article>
+  <article class="panel">
+    <h2>Semantic Memory</h2>
+    <p class="muted">{{ report.semantic_memory.embedding_model }} · {{ report.semantic_memory.item_count }} local items</p>
+    {% if report.semantic_memory.top_tags %}
+      <div class="tag-cloud">
+      {% for item in report.semantic_memory.top_tags %}
+        <span>{{ item.tag }} × {{ item.count }}</span>
+      {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No recurring tags yet.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

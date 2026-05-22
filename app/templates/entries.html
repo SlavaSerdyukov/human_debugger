@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Daily entries</p>
+    <h1>Entry History</h1>
+  </div>
+</section>
+
+<section class="two-column">
+  <form class="panel form" method="post" action="/entries">
+    <h2>Add Entry</h2>
+    <label>Date <input type="date" name="date" value="{{ today }}" required></label>
+    <label>Text <textarea name="text" rows="5" required placeholder="What happened? What felt blocked?"></textarea></label>
+    <div class="metric-grid">
+      <label>Mood <input type="number" name="mood" min="1" max="10" value="6" required></label>
+      <label>Energy <input type="number" name="energy" min="1" max="10" value="6" required></label>
+      <label>Focus <input type="number" name="focus" min="1" max="10" value="6" required></label>
+      <label>Stress <input type="number" name="stress" min="1" max="10" value="4" required></label>
+    </div>
+    <label>Sleep hours <input type="number" name="sleep_hours" min="0" max="24" step="0.25" value="7" required></label>
+    <label>Tags <input name="tags" placeholder="stuck, procrastination, deep-work"></label>
+    <button type="submit">Save entry</button>
+  </form>
+
+  <div class="stack">
+    {% if entries %}
+      {% for entry in entries %}
+      <article class="panel entry-card">
+        <div class="row">
+          <strong>{{ entry.date }}</strong>
+          <span>{{ entry.tags or "no tags" }}</span>
+        </div>
+        <p>{{ entry.text }}</p>
+        <p class="muted">Mood {{ entry.mood }} · Energy {{ entry.energy }} · Focus {{ entry.focus }} · Stress {{ entry.stress }} · Sleep {{ entry.sleep_hours }}h</p>
+      </article>
+      {% endfor %}
+    {% else %}
+      <article class="panel"><p class="muted">No entries yet. The console is quiet.</p></article>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
