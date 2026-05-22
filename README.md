@@ -87,7 +87,7 @@ You can configure Ollama with environment variables:
 ```bash
 export OLLAMA_BASE_URL=http://localhost:11434
 export OLLAMA_MODEL=llama3.1
-export OLLAMA_TIMEOUT=30.0
+export OLLAMA_TIMEOUT=8.0
 ```
 
 Useful local checks:
