@@ -3,6 +3,8 @@ import json
 
 LLM_GUARDRAILS = (
     "Rewrite this deterministic Human Debug Report in a friendly, direct, lightly cyberpunk tone. "
+    "Return plain text only, no Markdown, headings, bullets, or formatting markers. "
+    "Keep the response under 80 words. "
     "Do not add facts. Use only hypotheses, patterns, signals, possible risks, and suggested patches. "
     "Do not make medical claims. Do not use clinical framing. "
     "Never imply a condition or personal defect. "

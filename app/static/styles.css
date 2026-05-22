@@ -107,6 +107,57 @@ h4 { margin-bottom: 8px; color: var(--muted); }
   padding: 18px;
 }
 
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.section-title h2 {
+  margin-bottom: 0;
+}
+
+.llm-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.model-line {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.llm-summary {
+  max-width: 76ch;
+  white-space: pre-line;
+}
+
+.status-pill {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.status-pill.online {
+  border-color: rgba(63, 185, 80, 0.45);
+  color: var(--accent);
+  background: rgba(63, 185, 80, 0.08);
+}
+
+.status-pill.offline {
+  border-color: rgba(255, 123, 114, 0.45);
+  color: var(--danger);
+  background: rgba(255, 123, 114, 0.08);
+}
+
 .notice {
   border-color: var(--accent);
   margin-bottom: 18px;

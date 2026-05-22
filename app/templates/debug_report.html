@@ -110,14 +110,14 @@
   {% endif %}
 </section>
 
-<section class="panel">
-  <h2>LLM Polish Layer</h2>
-  <p class="muted">
-    {{ "Ollama online" if llm_summary.available else "Ollama offline" }}
-    · {{ llm_summary.model }}
-    · {{ llm_summary.base_url }}
-    · raw journals sent: {{ "no" if not llm_summary.raw_journal_sent else "yes" }}
-  </p>
-  <p>{{ llm_summary.summary }}</p>
+<section class="panel llm-panel">
+  <div class="section-title">
+    <h2>LLM Polish Layer</h2>
+    <span class="status-pill {{ 'online' if llm_summary.available else 'offline' }}">
+      {{ "Online" if llm_summary.available else "Offline" }}
+    </span>
+  </div>
+  <p class="model-line">Model {{ llm_summary.model }}</p>
+  <p class="llm-summary">{{ llm_summary.summary }}</p>
 </section>
 {% endblock %}

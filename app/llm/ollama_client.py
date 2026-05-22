@@ -38,7 +38,13 @@ class OllamaClient:
     def generate(self, prompt: str, model: str) -> str:
         response = httpx.post(
             f"{self.base_url}/api/generate",
-            json={"model": model, "prompt": prompt, "stream": False},
+            json={
+                "model": model,
+                "prompt": prompt,
+                "stream": False,
+                "keep_alive": "10m",
+                "options": {"num_predict": 180},
+            },
             timeout=self.timeout,
         )
         response.raise_for_status()
